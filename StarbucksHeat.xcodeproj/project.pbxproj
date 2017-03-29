@@ -7,21 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E23BD67D1E8ADE0E00787BB9 /* HeatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23BD67C1E8ADE0E00787BB9 /* HeatMap.swift */; };
 		E270AE211E8987560097DB23 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E270AE201E8987560097DB23 /* AppDelegate.swift */; };
-		E270AE231E8987560097DB23 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E270AE221E8987560097DB23 /* ViewController.swift */; };
+		E270AE231E8987560097DB23 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E270AE221E8987560097DB23 /* MapViewController.swift */; };
 		E270AE261E8987560097DB23 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E270AE241E8987560097DB23 /* Main.storyboard */; };
 		E270AE281E8987560097DB23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E270AE271E8987560097DB23 /* Assets.xcassets */; };
 		E270AE2B1E8987560097DB23 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E270AE291E8987560097DB23 /* LaunchScreen.storyboard */; };
+		E270AE331E898AAE0097DB23 /* xy4y-c4mk.json in Resources */ = {isa = PBXBuildFile; fileRef = E270AE321E898AAE0097DB23 /* xy4y-c4mk.json */; };
+		E2B68E0D1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E23BD67C1E8ADE0E00787BB9 /* HeatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatMap.swift; sourceTree = "<group>"; };
 		E270AE1D1E8987560097DB23 /* StarbucksHeat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StarbucksHeat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E270AE201E8987560097DB23 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E270AE221E8987560097DB23 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E270AE221E8987560097DB23 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		E270AE251E8987560097DB23 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E270AE271E8987560097DB23 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E270AE2A1E8987560097DB23 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E270AE2C1E8987560097DB23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E270AE321E898AAE0097DB23 /* xy4y-c4mk.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "xy4y-c4mk.json"; sourceTree = "<group>"; };
+		E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatMapOverlayRenderer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,11 +60,14 @@
 		E270AE1F1E8987560097DB23 /* StarbucksHeat */ = {
 			isa = PBXGroup;
 			children = (
+				E23BD67C1E8ADE0E00787BB9 /* HeatMap.swift */,
 				E270AE201E8987560097DB23 /* AppDelegate.swift */,
-				E270AE221E8987560097DB23 /* ViewController.swift */,
+				E270AE221E8987560097DB23 /* MapViewController.swift */,
+				E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */,
 				E270AE241E8987560097DB23 /* Main.storyboard */,
 				E270AE271E8987560097DB23 /* Assets.xcassets */,
 				E270AE291E8987560097DB23 /* LaunchScreen.storyboard */,
+				E270AE321E898AAE0097DB23 /* xy4y-c4mk.json */,
 				E270AE2C1E8987560097DB23 /* Info.plist */,
 			);
 			path = StarbucksHeat;
@@ -123,6 +132,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E270AE331E898AAE0097DB23 /* xy4y-c4mk.json in Resources */,
 				E270AE2B1E8987560097DB23 /* LaunchScreen.storyboard in Resources */,
 				E270AE281E8987560097DB23 /* Assets.xcassets in Resources */,
 				E270AE261E8987560097DB23 /* Main.storyboard in Resources */,
@@ -136,8 +146,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E270AE231E8987560097DB23 /* ViewController.swift in Sources */,
+				E2B68E0D1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift in Sources */,
+				E270AE231E8987560097DB23 /* MapViewController.swift in Sources */,
 				E270AE211E8987560097DB23 /* AppDelegate.swift in Sources */,
+				E23BD67D1E8ADE0E00787BB9 /* HeatMap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +311,7 @@
 				E270AE311E8987560097DB23 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
