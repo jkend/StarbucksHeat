@@ -13,8 +13,8 @@
 		E270AE261E8987560097DB23 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E270AE241E8987560097DB23 /* Main.storyboard */; };
 		E270AE281E8987560097DB23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E270AE271E8987560097DB23 /* Assets.xcassets */; };
 		E270AE2B1E8987560097DB23 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E270AE291E8987560097DB23 /* LaunchScreen.storyboard */; };
-		E270AE331E898AAE0097DB23 /* xy4y-c4mk.json in Resources */ = {isa = PBXBuildFile; fileRef = E270AE321E898AAE0097DB23 /* xy4y-c4mk.json */; };
 		E2B68E0D1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */; };
+		E2B68E0F1E8C48DB0028D23B /* xy4y-c4mk-US.json in Resources */ = {isa = PBXBuildFile; fileRef = E2B68E0E1E8C48DB0028D23B /* xy4y-c4mk-US.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,8 +26,8 @@
 		E270AE271E8987560097DB23 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E270AE2A1E8987560097DB23 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E270AE2C1E8987560097DB23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E270AE321E898AAE0097DB23 /* xy4y-c4mk.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "xy4y-c4mk.json"; sourceTree = "<group>"; };
 		E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatMapOverlayRenderer.swift; sourceTree = "<group>"; };
+		E2B68E0E1E8C48DB0028D23B /* xy4y-c4mk-US.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "xy4y-c4mk-US.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +67,7 @@
 				E270AE241E8987560097DB23 /* Main.storyboard */,
 				E270AE271E8987560097DB23 /* Assets.xcassets */,
 				E270AE291E8987560097DB23 /* LaunchScreen.storyboard */,
-				E270AE321E898AAE0097DB23 /* xy4y-c4mk.json */,
+				E2B68E0E1E8C48DB0028D23B /* xy4y-c4mk-US.json */,
 				E270AE2C1E8987560097DB23 /* Info.plist */,
 			);
 			path = StarbucksHeat;
@@ -132,7 +132,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E270AE331E898AAE0097DB23 /* xy4y-c4mk.json in Resources */,
+				E2B68E0F1E8C48DB0028D23B /* xy4y-c4mk-US.json in Resources */,
 				E270AE2B1E8987560097DB23 /* LaunchScreen.storyboard in Resources */,
 				E270AE281E8987560097DB23 /* Assets.xcassets in Resources */,
 				E270AE261E8987560097DB23 /* Main.storyboard in Resources */,
