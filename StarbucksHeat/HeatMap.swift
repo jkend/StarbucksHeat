@@ -93,33 +93,34 @@ class HeatMap: NSObject, MKOverlay {
 
     // MARK: Called by Overlay Renderer
     func mapPointsWithHeatIn(rect mapRect:MKMapRect, scale:MKZoomScale) -> [HeatPoint] {
-         var pointsInRect = [HeatPoint]()
+         var heatPointsInRect = [HeatPoint]()
         
          let bucketDelta = Int(Double(ScalingConstants.ScreenPointsPerBucket) / Double(scale))
          let scalingFactor = computeScaleFactor(using: scale)
         
          for heatPoint in heatPoints {
             if MKMapRectContainsPoint(mapRect, heatPoint.mapPoint) {
-                var scaledValue = heatPoint.heatValue / scalingFactor
+                let scaledValue = heatPoint.heatValue / scalingFactor
                 
                 let originalX  = Int(heatPoint.mapPoint.x);
                 let originalY  = Int(heatPoint.mapPoint.y);
                 let bucketX = Double(originalX - Int(originalX) % bucketDelta + bucketDelta / 2);
                 let bucketY = Double(originalY - Int(originalY) % bucketDelta + bucketDelta / 2);
                 
-                let existingPoint = pointsInRect.filter {
+                if let existingPointIndex = heatPointsInRect.index(where: {
                     $0.mapPoint.x == bucketX && $0.mapPoint.y == bucketY
+                }) {
+                    
+                    heatPointsInRect[existingPointIndex].heatValue += scaledValue;
+                }
+                else {
+                    let scaledHeatPoint = HeatPoint(mapPoint: MKMapPointMake(bucketX, bucketY), heatValue: scaledValue)
+                    heatPointsInRect.append(scaledHeatPoint)
                 }
                 
-                
-                if existingPoint.count > 0 {
-                    scaledValue += existingPoint[0].heatValue;
-                }
-                
-                pointsInRect.append(heatPoint)
             }
          }
-        return pointsInRect
+        return heatPointsInRect
     }
     
     // MARK: helper functions
@@ -139,5 +140,5 @@ class HeatMap: NSObject, MKOverlay {
 
 struct HeatPoint {
     let mapPoint: MKMapPoint
-    let heatValue: Double
+    var heatValue: Double
 }
