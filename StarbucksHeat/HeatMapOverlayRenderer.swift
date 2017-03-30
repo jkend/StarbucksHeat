@@ -77,12 +77,28 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
         
     }
     
+    // Note: Methods of colorizing are many, and I liked this one best - it's one that MATLAB has used for some time,
+    // from what I gathered.
     private func colorize(value: CGFloat, between minimum: CGFloat, and maximum: CGFloat) -> (CGFloat, CGFloat, CGFloat)
     {
-        let valueRatio = 2 * (value - minimum) / (maximum - minimum)
-        let blue = max(0,  (1 - valueRatio))
-        let red = max(0, (valueRatio - 1))
-        let green = 1 - blue - red
+        var red: CGFloat
+        var green: CGFloat
+        var blue: CGFloat
+        
+        if value <= 0 {
+            (red, green,blue) = (0.0, 0.0, 0.0)
+        } else if value < 0.125 {
+            (red, green,blue) = (0.0, 0.0, 4 * (value + 0.125))
+        } else if value < 0.375 {
+            (red, green,blue) = (0.0, 4 * (value - 0.125), 1.0)
+        } else if value < 0.625 {
+            (red, green,blue) = (4 * (value - 0.375), 1.0, 1 - 4 * (value - 0.375))
+        } else if value < 0.875 {
+            (red, green,blue) = (1.0, 1 - 4 * (value - 0.625), 0.0)
+        } else {
+            (red, green,blue) = (max(1 - 4 * (value - 0.875), 0.5), 0.0, 0.0)
+
+        }
         return (red, green, blue)
     }
 }
