@@ -15,6 +15,8 @@
 		E270AE2B1E8987560097DB23 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E270AE291E8987560097DB23 /* LaunchScreen.storyboard */; };
 		E2B68E0D1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */; };
 		E2B68E0F1E8C48DB0028D23B /* xy4y-c4mk-US.json in Resources */ = {isa = PBXBuildFile; fileRef = E2B68E0E1E8C48DB0028D23B /* xy4y-c4mk-US.json */; };
+		E2D092191E8EAF2000F618C2 /* ScatterPlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D092181E8EAF2000F618C2 /* ScatterPlot.swift */; };
+		E2D0921B1E8EB69100F618C2 /* ScatterPlotOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D0921A1E8EB69100F618C2 /* ScatterPlotOverlayRenderer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		E270AE2C1E8987560097DB23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeatMapOverlayRenderer.swift; sourceTree = "<group>"; };
 		E2B68E0E1E8C48DB0028D23B /* xy4y-c4mk-US.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "xy4y-c4mk-US.json"; sourceTree = "<group>"; };
+		E2D092181E8EAF2000F618C2 /* ScatterPlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScatterPlot.swift; sourceTree = "<group>"; };
+		E2D0921A1E8EB69100F618C2 /* ScatterPlotOverlayRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScatterPlotOverlayRenderer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,9 +65,11 @@
 			isa = PBXGroup;
 			children = (
 				E23BD67C1E8ADE0E00787BB9 /* HeatMap.swift */,
+				E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */,
+				E2D092181E8EAF2000F618C2 /* ScatterPlot.swift */,
+				E2D0921A1E8EB69100F618C2 /* ScatterPlotOverlayRenderer.swift */,
 				E270AE201E8987560097DB23 /* AppDelegate.swift */,
 				E270AE221E8987560097DB23 /* MapViewController.swift */,
-				E2B68E0C1E8C2E7D0028D23B /* HeatMapOverlayRenderer.swift */,
 				E270AE241E8987560097DB23 /* Main.storyboard */,
 				E270AE271E8987560097DB23 /* Assets.xcassets */,
 				E270AE291E8987560097DB23 /* LaunchScreen.storyboard */,
@@ -150,6 +156,8 @@
 				E270AE231E8987560097DB23 /* MapViewController.swift in Sources */,
 				E270AE211E8987560097DB23 /* AppDelegate.swift in Sources */,
 				E23BD67D1E8ADE0E00787BB9 /* HeatMap.swift in Sources */,
+				E2D0921B1E8EB69100F618C2 /* ScatterPlotOverlayRenderer.swift in Sources */,
+				E2D092191E8EAF2000F618C2 /* ScatterPlot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
