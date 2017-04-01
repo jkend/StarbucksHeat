@@ -49,23 +49,16 @@ class ScatterPlot: NSObject, MKOverlay {
         // Find the center of the map containing all these points, as a CLLocationCoordinate2D
         let centerMapPoint = MKMapPoint(x: upperLeft.x + (rectWidth/2), y: upperLeft.y + (rectHeight/2))
         coordinate = MKCoordinateForMapPoint(centerMapPoint)
-        
-        print("number found: \(scatterPoints.count)\n")
     }
 
     // MARK: Called by Overlay Renderer
     func scatterPointstIn(rect mapRect:MKMapRect, scale:MKZoomScale) -> [MKMapPoint] {
         var pointsInThisRect = [MKMapPoint]()
-        
         for point in scatterPoints {
             if MKMapRectContainsPoint(mapRect, point) {
-
-                
-                
                 pointsInThisRect.append(point)
             }
         }
         return pointsInThisRect
     }
-    
 }
