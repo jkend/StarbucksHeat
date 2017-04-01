@@ -14,22 +14,22 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
     override func draw(_ mapRect: MKMapRect, zoomScale: MKZoomScale, in context: CGContext) {
         let scatterOverlay = self.overlay as! ScatterPlot
         let scatterPointsInThisRect = scatterOverlay.scatterPointstIn(rect: mapRect, scale: zoomScale)
-        
+  
         context.setFillColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
-        //print("zoom recip: \(1/zoomScale)")
-        let userRect = self.rect(for: mapRect)
-        print("user rect size\(userRect.size))\n")
+
         // for each of our scatter points in this rectangle, decide how big it should based on the zoomScale
         var countPoints = 0
         for mapPoint in scatterPointsInThisRect {
             let userSpacePoint = self.point(for: mapPoint)
             
-            let plotRect = CGRect(origin: userSpacePoint, size: CGSize(width: 1/zoomScale, height: 1/zoomScale))
+            let plotRect = CGRect(origin: userSpacePoint, size: CGSize(width: 10 * (1/zoomScale), height: 10 * (1/zoomScale)))
             context.fill(plotRect)
             countPoints += 1
         }
         
         print("There were \(countPoints) in this tile")
+ 
+       // colorMapTiles(mapRect, in: context)
     }
     
     // Super useful debugging method that helps visualize how the renderer works - it breaks
@@ -44,6 +44,6 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
         
         let userRect = self.rect(for: mapRect)
         context.fill(userRect)
-        print("size: \(userRect.size)")
+        print("origin: \(userRect.origin)")
     }
 }
