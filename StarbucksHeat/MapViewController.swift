@@ -14,36 +14,73 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet private weak var mapView: MKMapView!
     
+    private enum MapRendererType {
+        case ScatterPlot
+        case HeatMap
+    }
+    private var currentMapType = MapRendererType.ScatterPlot
+    private var heatMap: HeatMap?
+    private var scatterMap: ScatterPlot?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if let heatPoints = parseData() {
-            let heatMap = HeatMap(with: heatPoints)
-        
-            // Position and zoom the map to just fit the heatmap data on screen
-            mapView.setVisibleMapRect(heatMap.boundingMapRect, animated: true)
-            print("rectangle: \(heatMap.boundingMapRect)")
-            // Add the heatmap overlay to the map view
-            mapView.add(heatMap)
- 
-            print("number found: \(heatPoints.count)")
-            // This would be unkind for this many points!!
-            /*
-            for heatPoint in heatPoints {
-                let annotation = MKPointAnnotation()
-                let mapPoint = heatPoint.mapPoint
-                let coord = MKCoordinateForMapPoint(mapPoint)
-                annotation.coordinate = coord
-                mapView.addAnnotation(annotation)
+            heatMap = HeatMap(with: heatPoints)
+            scatterMap = ScatterPlot(with: heatPoints)
 
-            }
-             */
+            updateMapOverlay()
+            
+            // Position and zoom the map to just fit the heatmap data on screen
+            mapView.setVisibleMapRect(scatterMap!.boundingMapRect, animated: true)
         }
     }
 
+    @IBAction private func changeMapOverlayType(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex
+        {
+        case 0:
+            currentMapType = MapRendererType.ScatterPlot
+        case 1:
+            currentMapType = MapRendererType.HeatMap
+        default:
+            break
+        }
+        updateMapOverlay()
+    }
+    
+    private func updateMapOverlay() {
+        if currentMapType == MapRendererType.ScatterPlot {
+            mapView.remove(heatMap!)
+            mapView.add(scatterMap!)
+            
+        } else {
+            mapView.remove(scatterMap!)
+            mapView.add(heatMap!)
+        }
+       
+    }
+    
     // MARK: MKMapViewDelegate
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        let heatMapRenderer = HeatMapOverlayRenderer(overlay: overlay)
-        return heatMapRenderer
+        if let heatOverlay = overlay as? HeatMap {
+           return HeatMapOverlayRenderer(overlay: heatOverlay)
+        }
+        else {
+            return ScatterPlotOverlayRenderer(overlay: overlay)
+        }
+    }
+    
+    private func showAnnotations(heatPoints: [HeatPoint]) {
+        // This would be unkind for this many points!!
+
+        for heatPoint in heatPoints {
+            let annotation = MKPointAnnotation()
+            let mapPoint = heatPoint.mapPoint
+            let coord = MKCoordinateForMapPoint(mapPoint)
+            annotation.coordinate = coord
+            mapView.addAnnotation(annotation)
+        }
+
     }
     
     // Parsing really belongs elsewhere, but it's okay here for now.

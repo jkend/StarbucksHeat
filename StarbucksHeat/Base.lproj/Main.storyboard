@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -27,11 +27,23 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="x00-ma-vNS"/>
                                 </connections>
                             </mapView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="u7N-Kf-yoh">
+                                <rect key="frame" x="102" y="20" width="171" height="29"/>
+                                <segments>
+                                    <segment title="Scatter plot"/>
+                                    <segment title="Heat map"/>
+                                </segments>
+                                <connections>
+                                    <action selector="changeMapOverlayType:" destination="BYZ-38-t0r" eventType="valueChanged" id="009-Qg-6t0"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="bmF-qc-o8u" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="0W4-UF-Xvn"/>
                             <constraint firstAttribute="trailing" secondItem="bmF-qc-o8u" secondAttribute="trailing" id="2BG-87-KLI"/>
+                            <constraint firstItem="u7N-Kf-yoh" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="I9b-7Y-9Iv"/>
+                            <constraint firstItem="u7N-Kf-yoh" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Lmd-pY-Ook"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="bmF-qc-o8u" secondAttribute="bottom" id="dmP-hG-auX"/>
                             <constraint firstItem="bmF-qc-o8u" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="sx8-km-NJg"/>
                         </constraints>
