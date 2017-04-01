@@ -60,8 +60,8 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
                 let heatValue = heatValuesWithinRect[index]
                 
                 let (red, green, blue) = colorize(value: CGFloat(heatValue), between: 0.0, and: 1.0)
-
-                context.setFillColor(red: red, green: green, blue: blue, alpha: 0.5)
+                let alpha = min(0.8, CGFloat(heatValue))
+                context.setFillColor(red: red, green: green, blue: blue, alpha: alpha)
                 let column = index % screenColumns
                 let row = index / screenColumns
                 
