@@ -22,8 +22,12 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
         for mapPoint in scatterPointsInThisRect {
             let userSpacePoint = self.point(for: mapPoint)
             
-            let plotRect = CGRect(origin: userSpacePoint, size: CGSize(width: 10 * (1/zoomScale), height: 10 * (1/zoomScale)))
-            context.fill(plotRect)
+           // let plotRect = CGRect(origin: userSpacePoint, size: CGSize(width: 10 * (1/zoomScale), height: 10 * (1/zoomScale)))
+           // context.fill(plotRect)
+            
+            let plotCircle = UIBezierPath(arcCenter: userSpacePoint, radius: 5 * (1/zoomScale), startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
+            context.addPath(plotCircle.cgPath)
+            context.fillPath()
             countPoints += 1
         }
         
