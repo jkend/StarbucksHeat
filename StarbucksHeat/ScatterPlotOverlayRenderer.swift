@@ -16,7 +16,8 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
         let scatterPointsInThisRect = scatterOverlay.scatterPointstIn(rect: mapRect, scale: zoomScale)
   
         context.setFillColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
-
+        let currentZoomLevel = zoomLevel(of: zoomScale)
+        print("Zoom level = \(currentZoomLevel)")
         // for each of our scatter points in this rectangle, decide how big it should based on the zoomScale
         var countPoints = 0
         for mapPoint in scatterPointsInThisRect {
@@ -25,7 +26,7 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
            // let plotRect = CGRect(origin: userSpacePoint, size: CGSize(width: 10 * (1/zoomScale), height: 10 * (1/zoomScale)))
            // context.fill(plotRect)
             
-            let plotCircle = UIBezierPath(arcCenter: userSpacePoint, radius: 5 * (1/zoomScale), startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
+            let plotCircle = UIBezierPath(arcCenter: userSpacePoint, radius: CGFloat(currentZoomLevel) * (1/zoomScale), startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
             context.addPath(plotCircle.cgPath)
             context.fillPath()
             countPoints += 1
@@ -49,5 +50,16 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
         let userRect = self.rect(for: mapRect)
         context.fill(userRect)
         print("origin: \(userRect.origin)")
+    }
+    
+
+}
+
+extension MKOverlayRenderer {
+    func zoomLevel(of zoomScale:MKZoomScale) -> Double {
+        let totalTilesAtMaxZoom = MKMapSizeWorld.width / 256.0;
+        let zoomLevelAtMaxZoom = log2(totalTilesAtMaxZoom);
+        
+        return max(0, zoomLevelAtMaxZoom + log2(Double(zoomScale)));
     }
 }
