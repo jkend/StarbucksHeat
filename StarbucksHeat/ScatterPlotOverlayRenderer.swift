@@ -18,15 +18,27 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
         context.setFillColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
         let currentZoomLevel = zoomLevel(of: zoomScale)
         print("Zoom level = \(currentZoomLevel)")
+        let userSpaceRect = self.rect(for: mapRect)
         // for each of our scatter points in this rectangle, decide how big it should based on the zoomScale
         var countPoints = 0
         for mapPoint in scatterPointsInThisRect {
-            let userSpacePoint = self.point(for: mapPoint)
+            let plotPointCenter = self.point(for: mapPoint)
             
            // let plotRect = CGRect(origin: userSpacePoint, size: CGSize(width: 10 * (1/zoomScale), height: 10 * (1/zoomScale)))
            // context.fill(plotRect)
             
-            let plotCircle = UIBezierPath(arcCenter: userSpacePoint, radius: CGFloat(currentZoomLevel) * (1/zoomScale), startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
+            let plotPointRadius = CGFloat(currentZoomLevel) * (1/zoomScale)
+            // make sure the circle we're about to draw lies within our mapRect (ie it won't get clipped)
+            let adjustedPlotPoint = adjustPoint(point: plotPointCenter,
+                                                usingRadius: plotPointRadius,
+                                                within: userSpaceRect)
+
+            
+            let plotCircle = UIBezierPath(arcCenter: adjustedPlotPoint,
+                                          radius: plotPointRadius,
+                                          startAngle: 0,
+                                          endAngle: 2 * CGFloat.pi,
+                                          clockwise: true)
             context.addPath(plotCircle.cgPath)
             context.fillPath()
             countPoints += 1
@@ -51,7 +63,29 @@ class ScatterPlotOverlayRenderer: MKOverlayRenderer {
         context.fill(userRect)
         print("origin: \(userRect.origin)")
     }
-    
+
+    // If the given point plus or minus its radius goes outside the bounds of the given rect,
+    // nudge the point over until it fits within the rect.
+    private func adjustPoint(point: CGPoint, usingRadius radius: CGFloat, within rect: CGRect) -> CGPoint
+    {
+        var adjustedPoint = point
+        // check x coord
+        if point.x + radius > rect.origin.x + rect.size.width {
+            adjustedPoint.x = rect.origin.x + rect.size.width - radius
+        }
+        else if point.x - radius < rect.origin.x {
+            adjustedPoint.x = rect.origin.x + radius
+        }
+        
+        // check y coord
+        if point.y + radius > rect.origin.y + rect.size.height {
+            adjustedPoint.y = rect.origin.y + rect.size.height - radius
+        }
+        else if point.y - radius < rect.origin.y {
+            adjustedPoint.y = rect.origin.y + radius
+        }
+        return adjustedPoint
+    }
 
 }
 
