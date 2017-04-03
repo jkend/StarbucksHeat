@@ -113,13 +113,12 @@ class HeatMap: NSObject, MKOverlay {
                 let bucketX = originalX.truncatingRemainder(dividingBy: Double(bucketDimension))
                 let bucketY = originalY.truncatingRemainder(dividingBy: Double(bucketDimension))
                 
-                let myBucketX = originalX - bucketX + toBucketCenter //Double(originalX - Int(originalX) % bucketDelta + bucketDelta / 2)
-                let myBucketY = originalY - bucketY + toBucketCenter //Double(originalY - Int(originalY) % bucketDelta + bucketDelta / 2)
+                let myBucketX = originalX - bucketX + toBucketCenter
+                let myBucketY = originalY - bucketY + toBucketCenter
                 
                 if let existingPointIndex = heatPointsInRect.index(where: {
                     $0.mapPoint.x == myBucketX && $0.mapPoint.y == myBucketY
                 }) {
-                    
                     heatPointsInRect[existingPointIndex].heatValue += scaledHeatValue;
                 }
                 else {
