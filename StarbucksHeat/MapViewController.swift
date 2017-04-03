@@ -24,6 +24,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.isRotateEnabled = false
         if let heatPoints = parseData() {
             heatMap = HeatMap(with: heatPoints)
             scatterMap = ScatterPlot(with: heatPoints)
