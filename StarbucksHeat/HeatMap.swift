@@ -31,7 +31,7 @@ class HeatMap: NSObject, MKOverlay {
     
     private struct ScalingConstants {
         static let ScalePower = 4.0;
-        static let ScreenPointsPerBucket = 10;
+        static let ScreenPointsPerBucket: CGFloat = 10;
     }
     
     
@@ -47,7 +47,7 @@ class HeatMap: NSObject, MKOverlay {
         
         for heatPoint in self.heatPoints {
             let coord = heatPoint.mapPoint
-            // Find the over all upper left and lower right corners,
+            // Find the overall upper left and lower right corners,
             // used for building the boundingMapRect MKOverlay property
             if coord.x < upperLeft.x {
                 upperLeft.x = coord.x
@@ -82,9 +82,10 @@ class HeatMap: NSObject, MKOverlay {
             }
         }
         
-        let rectHeight = lowerRight.y - upperLeft.y
-        let rectWidth = lowerRight.x - upperLeft.x
-        boundingMapRect = MKMapRect(origin: upperLeft, size: MKMapSizeMake(rectWidth, rectHeight))
+        let rectHeight = lowerRight.y - upperLeft.y + 100000
+        let rectWidth = lowerRight.x - upperLeft.x + 100000
+        let paddedUpperLeft = MKMapPointMake(upperLeft.x - 50000, upperLeft.y - 50000)
+        boundingMapRect = MKMapRect(origin: paddedUpperLeft, size: MKMapSizeMake(rectWidth, rectHeight))
         
         let centerMapPoint = MKMapPointMake(upperLeft.x + (rectWidth/2), upperLeft.y + (rectHeight/2))
         coordinate = MKCoordinateForMapPoint(centerMapPoint)        
@@ -95,26 +96,34 @@ class HeatMap: NSObject, MKOverlay {
     func mapPointsWithHeatIn(rect mapRect:MKMapRect, scale:MKZoomScale) -> [HeatPoint] {
          var heatPointsInRect = [HeatPoint]()
         
-         let bucketDelta = Int(Double(ScalingConstants.ScreenPointsPerBucket) / Double(scale))
-         let scalingFactor = computeScaleFactor(using: scale)
+         // Each bucket is a square, sized based on our zoom scale.  We pile multiple
+         // nearby points (again, nearby is relative) into a single bucket.
+         let bucketDimension = ScalingConstants.ScreenPointsPerBucket / scale
+
+         let heatScalingFactor = computeScaleFactor(using: scale)
         
          for heatPoint in heatPoints {
             if MKMapRectContainsPoint(mapRect, heatPoint.mapPoint) {
-                let scaledValue = heatPoint.heatValue / scalingFactor
+                let scaledHeatValue = heatPoint.heatValue / heatScalingFactor
                 
-                let originalX  = Int(heatPoint.mapPoint.x);
-                let originalY  = Int(heatPoint.mapPoint.y);
-                let bucketX = Double(originalX - Int(originalX) % bucketDelta + bucketDelta / 2);
-                let bucketY = Double(originalY - Int(originalY) % bucketDelta + bucketDelta / 2);
+                let originalX  = heatPoint.mapPoint.x
+                let originalY  = heatPoint.mapPoint.y
+                // Want to put this point at the center of a scaled square (tile)
+                let toBucketCenter = Double(bucketDimension/2)
+                let bucketX = originalX.truncatingRemainder(dividingBy: Double(bucketDimension))
+                let bucketY = originalY.truncatingRemainder(dividingBy: Double(bucketDimension))
+                
+                let myBucketX = originalX - bucketX + toBucketCenter //Double(originalX - Int(originalX) % bucketDelta + bucketDelta / 2)
+                let myBucketY = originalY - bucketY + toBucketCenter //Double(originalY - Int(originalY) % bucketDelta + bucketDelta / 2)
                 
                 if let existingPointIndex = heatPointsInRect.index(where: {
-                    $0.mapPoint.x == bucketX && $0.mapPoint.y == bucketY
+                    $0.mapPoint.x == myBucketX && $0.mapPoint.y == myBucketY
                 }) {
                     
-                    heatPointsInRect[existingPointIndex].heatValue += scaledValue;
+                    heatPointsInRect[existingPointIndex].heatValue += scaledHeatValue;
                 }
                 else {
-                    let scaledHeatPoint = HeatPoint(mapPoint: MKMapPointMake(bucketX, bucketY), heatValue: scaledValue)
+                    let scaledHeatPoint = HeatPoint(mapPoint: MKMapPointMake(myBucketX, myBucketY), heatValue: scaledHeatValue)
                     heatPointsInRect.append(scaledHeatPoint)
                 }
                 
