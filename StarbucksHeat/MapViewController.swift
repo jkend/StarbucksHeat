@@ -52,7 +52,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     private func updateMapOverlay() {
         if currentMapType == MapRendererType.ScatterPlot {
             mapView.remove(heatMap!)
-            mapView.add(scatterMap!)
+            mapView.add(scatterMap!, level: .aboveRoads)
             
         } else {
             mapView.remove(scatterMap!)
@@ -64,7 +64,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // MARK: MKMapViewDelegate
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let heatOverlay = overlay as? HeatMap {
-           return HeatMapOverlayRenderer(overlay: heatOverlay)
+            return HeatMapOverlayRenderer(overlay: heatOverlay)
         }
         else {
             return ScatterPlotOverlayRenderer(overlay: overlay)
