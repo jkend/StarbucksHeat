@@ -16,6 +16,7 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
     let HeatRadiusInPoints = 48
     let MapTileDimension = 256
     
+    // MARK: Draw
     override func draw(_ mapRect: MKMapRect, zoomScale: MKZoomScale, in context: CGContext)
     {
         // Get our mapRect as a CGRect
@@ -69,12 +70,11 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
         for index in 0..<heatValuesWithinRect.count {
             // Don't bother if the value here isn't greater than zero
             if heatValuesWithinRect[index] > 0 {
-                // Colorize this heat value. For now don't do anything fancy with the alpha.
-                let alpha: CGFloat = 0.6
+                // Colorize this heat value.
                 let (red, green, blue) = colorize(value: CGFloat(heatValuesWithinRect[index]),
                                                   between: 0.0,
                                                   and: 1.0)
-                context.setFillColor(red: red, green: green, blue: blue, alpha: alpha)
+                context.setFillColor(red: red, green: green, blue: blue, alpha: 1.0)
                 
                 // Now figure out where this color belongs on screen
                 let tileColumn = index % MapTileDimension
@@ -91,6 +91,7 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
         }
     }
 
+    // MARK: Scaling values
     // I got this scaling matrix from Ryan Olson's HeatMap project, it really helped!
     private func setupScales() -> [Double] {
         var matrix = [Double](repeating: 0.0, count:2 * HeatRadiusInPoints * 2 * HeatRadiusInPoints)
@@ -113,9 +114,65 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
         return matrix
     }
     
-    // Note: Methods of colorizing are many, and I liked this one best - it's one that MATLAB has used for some time,
-    // from what I gathered.
+    // MARK: Colorizing
+    // This is the colorizer from Apple's example project HazardMap - the MatLab one was too dark, after all
     private func colorize(value: CGFloat, between minimum: CGFloat, and maximum: CGFloat) -> (CGFloat, CGFloat, CGFloat)
+    {
+        var red: CGFloat
+        var green: CGFloat
+        var blue: CGFloat
+        
+        let adjustedValue = sqrt(value)
+        
+        if adjustedValue > 0.77 {
+            (red, green,blue) =  (0.588, 0.294, 0.78)
+        }
+        else if (adjustedValue > 0.59) {
+            (red, green,blue) = (0.784, 0.471, 0.82)
+        }
+        else if (adjustedValue > 0.46) {
+            (red, green,blue) = (1, 0, 0)
+        }
+        else if (adjustedValue > 0.35) {
+            (red, green,blue) = (1, 0.392, 0)
+        }
+        else if (adjustedValue > 0.27) {
+            (red, green,blue) = (1, 0.392, 0)
+        }
+        else if (adjustedValue > 0.21) {
+            (red, green,blue) = (1, 0.784, 0)
+        }
+        else if (adjustedValue > 0.16) {
+            (red, green,blue) = (1, 1, 0.5)
+        }
+        else if (adjustedValue > 0.12) {
+            (red, green,blue) = (0.745, 0.941, 0.467)
+        }
+        else if (adjustedValue > 0.10) {
+            (red, green,blue) = (0.122, 1, 0.31)
+        }
+        else if (adjustedValue > 0.08) {
+            (red, green,blue) = (0.588, 1, 0.941)
+        }
+        else if (adjustedValue > 0.06) {
+            (red, green,blue) = (0.784, 1, 1)
+        }
+        else if (adjustedValue > 0.04) {
+            (red, green,blue) = (0.843, 1, 1)
+        }
+        else if (adjustedValue > 0.03) {
+            (red, green,blue) = (0.902, 1, 1)
+        }
+        else {
+            (red, green,blue) = (0.784, 0.784, 0.784)
+        }
+        
+        return (red, green, blue)
+    }
+    
+    // Note: Methods of colorizing are many, this is apparently one that MATLAB has used for some time.
+    // I liked it at first, but eventually decided it was too dark for the low values.
+    private func colorizeOld(value: CGFloat, between minimum: CGFloat, and maximum: CGFloat) -> (CGFloat, CGFloat, CGFloat)
     {
         var red: CGFloat
         var green: CGFloat
@@ -139,4 +196,5 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
         }
         return (red, green, blue)
     }
+    
 }
