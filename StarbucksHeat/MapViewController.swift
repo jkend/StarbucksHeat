@@ -56,7 +56,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
         } else {
             mapView.remove(scatterMap!)
-            mapView.add(heatMap!)
+            mapView.add(heatMap!, level: .aboveRoads)
         }
        
     }
