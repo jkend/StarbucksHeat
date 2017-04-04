@@ -13,6 +13,7 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
     
     lazy var scales: [Double] = self.setupScales()
     
+    let LowerThreshold = 0.0
     let HeatRadiusInPoints = 48
     let MapTileDimension = 256
     
@@ -37,58 +38,11 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
         let mapPointsWithHeat = heatMapOverlay.mapPointsWithHeatIn(rect: expandedMapRect, scale: zoomScale)
 
         // This array will store the heat values based on scale within this fixed-sized tile
-        var heatValuesWithinRect = [Double](repeating: 0.0, count:MapTileDimension * MapTileDimension)
-        
-        for heatPoint in mapPointsWithHeat {
-            if heatPoint.heatValue > 0 {
-                // Figure out where we are on the screen right now
-                let screenPoint = self.point(for: heatPoint.mapPoint)
-    
-                let gridCoord = CGPoint(x: (screenPoint.x - screenRect.origin.x) * zoomScale,
-                                        y: (screenPoint.y - screenRect.origin.y) * zoomScale)
-  
-                for c in 0..<(2 * HeatRadiusInPoints) {
-                    for r in 0..<(2 * HeatRadiusInPoints) {
-                        // Check all the points surrounding this tile coordinate, and scale their
-                        // heat according to how close they are to this heat point.
-                        // Oh yeah, and when doing Swift's absurd type conversions, watch out
-                        // where you put your parentheses! Grrr.
-                        let column = Int((gridCoord.x - CGFloat(HeatRadiusInPoints) + CGFloat(c)).rounded(.down))
-                        let row =  Int((gridCoord.y - CGFloat(HeatRadiusInPoints) + CGFloat(r)).rounded(.down))
+        let heatValuesWithinRect: [Double] = findHeatValues(of: mapPointsWithHeat, within: screenRect, zoomScale: zoomScale)
 
-                        // Check the bounds of the row and column
-                        if row >= 0 && row < MapTileDimension && column >= 0 && column < MapTileDimension {
-                            let index = MapTileDimension * row + column
-                            heatValuesWithinRect[index] += heatPoint.heatValue * scales[r * 2 * HeatRadiusInPoints + c];
-                        }
-                    }
-                }
-            }
-        }
-  
-        // Now, go through the array we just built and colorize based on value and zoom scale
-        for index in 0..<heatValuesWithinRect.count {
-            // Don't bother if the value here isn't greater than zero
-            if heatValuesWithinRect[index] > 0 {
-                // Colorize this heat value.
-                let (red, green, blue) = colorize(value: CGFloat(heatValuesWithinRect[index]),
-                                                  between: 0.0,
-                                                  and: 1.0)
-                context.setFillColor(red: red, green: green, blue: blue, alpha: 1.0)
-                
-                // Now figure out where this color belongs on screen
-                let tileColumn = index % MapTileDimension
-                let tileRow = index / MapTileDimension
-                
-                // Re-scale to match current zoomScale and visible rectangle
-                let thisPointsScreenRect = CGRect(x: screenRect.origin.x + CGFloat(tileColumn) / zoomScale,
-                                                  y: screenRect.origin.y + CGFloat(tileRow) / zoomScale,
-                                                  width: 1/zoomScale,
-                                                  height: 1/zoomScale)
-
-                context.fill(thisPointsScreenRect)
-            }
-        }
+        // Colorize the array we just built based on value and zoom scale.
+        colorizeHeatValues(heatValues: heatValuesWithinRect, within: screenRect, zoomScale: zoomScale, in: context)
+       
     }
 
     // MARK: Scaling values
@@ -114,8 +68,76 @@ class HeatMapOverlayRenderer: MKOverlayRenderer {
         return matrix
     }
     
+    // MARK: Heat within Rect
+    // Given an array of HeatPoints within a particular rectangle and given zoom scale, compute the heat of surrounding
+    // points (within a given "heat radius").
+    private func findHeatValues(of heatPoints:[HeatPoint], within rect: CGRect, zoomScale: MKZoomScale) -> [Double]
+    {
+        var heatValuesForThisRect = [Double](repeating: 0.0, count:MapTileDimension * MapTileDimension)
+        
+        for heatPoint in heatPoints {
+            if heatPoint.heatValue > 0 {
+                // Figure out where we are on the screen right now
+                let screenPoint = self.point(for: heatPoint.mapPoint)
+                // Then convert it to a coordinate on the current tile using the zoom scale.
+                // gridCoord's x and y will be between 0 and MapTileDimension (which happens to be 256).
+                let gridCoord = CGPoint(x: (screenPoint.x - rect.origin.x) * zoomScale,
+                                        y: (screenPoint.y - rect.origin.y) * zoomScale)
+                
+                for c in 0..<(2 * HeatRadiusInPoints) {
+                    for r in 0..<(2 * HeatRadiusInPoints) {
+                        // Check all the points surrounding this tile coordinate, and scale their
+                        // heat according to how close they are to this heat point.
+                        // Oh yeah, and when doing Swift's absurd type conversions, watch out
+                        // where you put your parentheses! Grrr.
+                        let column = Int((gridCoord.x - CGFloat(HeatRadiusInPoints) + CGFloat(c)).rounded(.down))
+                        let row =  Int((gridCoord.y - CGFloat(HeatRadiusInPoints) + CGFloat(r)).rounded(.down))
+                        
+                        
+                        if row >= 0 && row < MapTileDimension && column >= 0 && column < MapTileDimension {
+                            let index = MapTileDimension * row + column
+                            heatValuesForThisRect[index] += heatPoint.heatValue * scales[r * 2 * HeatRadiusInPoints + c];
+                        }
+                    }
+                }
+            }
+        }
+        return heatValuesForThisRect
+    }
+    
     // MARK: Colorizing
-    // This is the colorizer from Apple's example project HazardMap - the MatLab one was too dark, after all
+    // Given an array of heat values and a rectangle, colorize each rectangle within this tile that corresponds to each
+    // heat value.  The array "heatValues" has been built to represent a grid, ie its dimensions are the width and
+    // height of a tile, and each "index" can be converted to [row][column] of the tile.
+    private func colorizeHeatValues(heatValues: [Double], within rect: CGRect, zoomScale: MKZoomScale, in context: CGContext)
+    {
+        for index in 0..<heatValues.count {
+            // Don't bother if the value here isn't greater than our lower threshold (zero for now,
+            // but could be some other small value that we deem too insignificant to plot).
+            if heatValues[index] > LowerThreshold {
+                // Colorize this heat value.
+                let (red, green, blue) = colorize(value: CGFloat(heatValues[index]),
+                                                  between: 0.0,
+                                                  and: 1.0)
+                context.setFillColor(red: red, green: green, blue: blue, alpha: 1.0)
+                
+                // Now figure out where this color belongs on screen
+                let tileColumn = index % MapTileDimension
+                let tileRow = index / MapTileDimension
+                
+                // Re-scale to match current zoomScale and visible rectangle
+                let thisPointsScreenRect = CGRect(x: rect.origin.x + CGFloat(tileColumn) / zoomScale,
+                                                  y: rect.origin.y + CGFloat(tileRow) / zoomScale,
+                                                  width: 1/zoomScale,
+                                                  height: 1/zoomScale)
+                
+                context.fill(thisPointsScreenRect)
+            }
+        }
+    }
+    
+    
+    // This is the colorizer from Apple's example project HazardMap - the MatLab one was too dark.
     private func colorize(value: CGFloat, between minimum: CGFloat, and maximum: CGFloat) -> (CGFloat, CGFloat, CGFloat)
     {
         var red: CGFloat
